@@ -11,6 +11,10 @@
 //
 // Author: somnath@google.com (Somnath Banerjee)
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <assert.h>
 #include "./vp8enci.h"
 

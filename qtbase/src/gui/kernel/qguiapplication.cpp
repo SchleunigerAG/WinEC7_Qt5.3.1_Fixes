@@ -168,6 +168,10 @@ QFont *QGuiApplicationPrivate::app_font = 0;
 bool QGuiApplicationPrivate::obey_desktop_settings = true;
 bool QGuiApplicationPrivate::noGrab = false;
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+QObject *QGuiApplication::m_oTouchObject = NULL;
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 static qreal fontSmoothingGamma = 1.7;
 
 extern void qRegisterGuiVariant();
@@ -826,6 +830,22 @@ QObject *QGuiApplication::focusObject()
         return focusWindow()->focusObject();
     return 0;
 }
+
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+void QGuiApplication::setTouchObject(QObject *oTouchObject)
+{
+	m_oTouchObject = oTouchObject;
+}
+
+QObject *QGuiApplication::touchObject()
+{
+	if(!m_oTouchObject)
+	{
+		return NULL;
+	}
+	return m_oTouchObject;
+}
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
 
 /*!
     \fn QGuiApplication::allWindows()
@@ -1690,6 +1710,10 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
 
     if (!window)
         return;
+
+	// CHANGES SCHLEUNIGER AG, April 2015 :: START
+	QGuiApplication::setTouchObject(window->currentWidget());
+	// CHANGES SCHLEUNIGER AG, April 2015 :: END
 
     QMouseEvent ev(type, localPoint, localPoint, globalPoint, button, buttons, e->modifiers);
     ev.setTimestamp(e->timestamp);

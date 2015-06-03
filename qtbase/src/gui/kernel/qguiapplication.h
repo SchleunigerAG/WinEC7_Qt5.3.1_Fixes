@@ -104,6 +104,11 @@ public:
     static QWindow *focusWindow();
     static QObject *focusObject();
 
+	// CHANGES SCHLEUNIGER AG, April 2015 :: START
+	static void setTouchObject(QObject *oTouchWidget);
+	static QObject *touchObject();
+	// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
     static QScreen *primaryScreen();
     static QList<QScreen *> screens();
     qreal devicePixelRatio() const;
@@ -192,6 +197,10 @@ private:
 #ifndef QT_NO_SESSIONMANAGER
     friend class QPlatformSessionManager;
 #endif
+
+	// CHANGES SCHLEUNIGER AG, April 2015 :: START
+	static QObject *m_oTouchObject;
+	// CHANGES SCHLEUNIGER AG, April 2015 :: END
 };
 
 QT_END_NAMESPACE

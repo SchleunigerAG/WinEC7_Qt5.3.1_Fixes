@@ -125,6 +125,13 @@ QObject *QWidgetWindow::focusObject() const
     return widget;
 }
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+QObject *QWidgetWindow::currentWidget() const
+{
+    return m_widget;
+}
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 bool QWidgetWindow::event(QEvent *event)
 {
     if (m_widget->testAttribute(Qt::WA_DontShowOnScreen)) {

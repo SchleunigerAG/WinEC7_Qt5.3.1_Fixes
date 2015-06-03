@@ -11,6 +11,10 @@
 //
 // Author: Skal (pascal.massimino@gmail.com)
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <assert.h>
 #include <string.h>   // for memset()
 #include "./thread.h"

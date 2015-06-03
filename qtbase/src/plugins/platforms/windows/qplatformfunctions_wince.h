@@ -87,7 +87,9 @@
 #endif
 
 #ifndef CAPTUREBLT
-#define CAPTUREBLT                   (DWORD)0x40000000
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#define CAPTUREBLT                   (DWORD)0x0
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
 #endif
 
 #define SW_SHOWMINIMIZED SW_MINIMIZE
@@ -271,15 +273,24 @@ typedef struct tagTTPOLYCURVE
 #define WM_DRAWCLIPBOARD 0x0308
 #endif
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include <QFileInfo>
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 inline bool IsIconic( HWND /*hWnd*/ )
 {
     return false;
 }
 
-inline int AddFontResourceExW( LPCWSTR /*name*/, DWORD /*fl*/, PVOID /*res*/)
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+inline int AddFontResourceExW( LPCWSTR name, DWORD /*fl*/, PVOID /*res*/)
 {
-    return 0;
+	QString fName = QString::fromWCharArray(name);
+	QFileInfo fileinfo(fName);
+	fName = fileinfo.absoluteFilePath();
+	return AddFontResource((LPCWSTR)fName.utf16());
 }
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
 
 inline bool RemoveFontResourceExW( LPCWSTR /*name*/, DWORD /*fl*/, PVOID /*pdv*/)
 {

@@ -12,6 +12,10 @@
 // Authors: Urvang (urvang@google.com)
 //          Vikas (vikasa@google.com)
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <assert.h>
 #include "./muxi.h"
 #include "../utils/utils.h"

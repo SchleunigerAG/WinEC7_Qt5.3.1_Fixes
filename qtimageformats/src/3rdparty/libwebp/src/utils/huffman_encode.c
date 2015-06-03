@@ -11,6 +11,10 @@
 //
 // Entropy encoding (Huffman) for webp lossless.
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

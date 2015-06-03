@@ -66,6 +66,11 @@ public:
 #endif
 
     QObject *focusObject() const;
+
+	// CHANGES SCHLEUNIGER AG, April 2015 :: START
+	QObject *currentWidget() const;
+	// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 protected:
     bool event(QEvent *);
 
