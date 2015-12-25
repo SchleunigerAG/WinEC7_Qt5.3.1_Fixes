@@ -85,6 +85,11 @@ private:
     QTouchDevice *m_touchDevice;
     bool m_leftButtonDown;
     QWindow *m_previousCaptureWindow;
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+#ifdef Q_OS_WINCE
+    bool had2ndTouchPoint;
+#endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 };
 
 Qt::MouseButtons QWindowsMouseHandler::keyStateToMouseButtons(int wParam)

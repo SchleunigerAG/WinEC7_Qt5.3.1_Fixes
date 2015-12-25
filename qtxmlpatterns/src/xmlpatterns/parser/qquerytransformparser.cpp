@@ -178,6 +178,10 @@
 //
 // We mean it.
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#define _CRT_BANNED_DEPRECATE( x )
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <limits>
 
 #include <QUrl>

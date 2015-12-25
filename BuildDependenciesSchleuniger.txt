@@ -1,0 +1,7 @@
+The following tools were used to build:
+Microsoft Visual Studio 2008 SP1
+Toradex Windows EC 7 SDK
+NVidia Tegra Windows CE 6 Drivers ce6_tegra_250_5265393
+ActivePerl-5.16.3.1604-MSWin32-x64-298023
+python-3.4.2.amd64
+

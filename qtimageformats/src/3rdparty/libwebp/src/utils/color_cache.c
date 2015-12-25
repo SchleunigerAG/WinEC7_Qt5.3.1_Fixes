@@ -11,6 +11,10 @@
 //
 // Author: Jyrki Alakuijala (jyrki@google.com)
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include <assert.h>
 #include <stdlib.h>
 #include "./color_cache.h"

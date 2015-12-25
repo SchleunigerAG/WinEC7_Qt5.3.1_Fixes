@@ -10,6 +10,10 @@
 //  WebP container demux.
 //
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#include "windows.h"
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif

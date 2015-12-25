@@ -174,4 +174,10 @@ typedef TOUCHINPUT const * PCTOUCHINPUT;
 
 #endif // if defined(Q_CC_MINGW) || !defined(TOUCHEVENTF_MOVE)
 
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+#ifndef WM_GESTURE
+#  define WM_GESTURE 0x0119
+#endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
+
 #endif // QTWINDOWS_ADDITIONAL_H

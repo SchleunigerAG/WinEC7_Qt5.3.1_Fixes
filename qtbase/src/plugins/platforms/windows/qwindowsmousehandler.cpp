@@ -55,6 +55,9 @@
 #include <QtCore/QScopedArrayPointer>
 
 #include <windowsx.h>
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+#include <WinUser.h>
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 
 QT_BEGIN_NAMESPACE
 
@@ -397,9 +400,11 @@ bool QWindowsMouseHandler::translateMouseWheelEvent(QWindow *window, HWND,
 }
 
 // from bool QApplicationPrivate::translateTouchEvent()
-bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND,
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND hwnd,
                                                QtWindows::WindowsEventType,
                                                MSG msg, LRESULT *)
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 {
 #ifndef Q_OS_WINCE
     typedef QWindowSystemInterface::TouchPoint QTouchPoint;
@@ -478,7 +483,106 @@ bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND,
                                              touchPoints);
     return true;
 #else
-    return false;
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+    GESTUREINFO gi;
+    memset(&gi, 0, sizeof(GESTUREINFO));
+    gi.cbSize = sizeof(GESTUREINFO);
+
+    if (!GetGestureInfo((HGESTUREINFO)msg.lParam, &gi))
+        return false;
+
+    ulong timestamp = 0;
+    const QPoint position = QPoint(gi.ptsLocation.x, gi.ptsLocation.y);
+    Qt::NativeGestureType gestureType = (Qt::NativeGestureType)402; // ### "None"
+    qCDebug(lcQpaEvents) << gi.dwID << gi.dwFlags << gi.dwInstanceID << gi.dwSequenceID;
+    switch (gi.dwID) {
+    case GID_DIRECTMANIPULATION:
+        gestureType = Qt::DirectManipulation;
+        break;
+    default:
+        break;
+    }
+
+    if (gestureType != Qt::DirectManipulation) {
+        return true;
+    } else {
+        static QPoint lastTouchPos;
+        const QRect screenGeometry = window->screen()->geometry();
+        QWindowSystemInterface::TouchPoint touchPoint;
+        static QWindowSystemInterface::TouchPoint touchPoint2;
+        touchPoint.id = 0;//gi.dwInstanceID;
+        touchPoint.pressure = 1.0;
+
+        if (gi.dwFlags & GF_BEGIN)
+            touchPoint.state = Qt::TouchPointPressed;
+        else if (gi.dwFlags & GF_END)
+            touchPoint.state = Qt::TouchPointReleased;
+        else if (gi.dwFlags == 0)
+            touchPoint.state = Qt::TouchPointMoved;
+        else
+            return true;
+        touchPoint2.pressure = 1.0;
+        touchPoint2.id = 1;
+        const QPoint winEventPosition = position;
+        const int deltaX = GID_DIRECTMANIPULATION_DELTA_X(gi.ullArguments);
+        const int deltaY = GID_DIRECTMANIPULATION_DELTA_Y(gi.ullArguments);
+        //Touch points are taken from the whole screen so map the position to the screen
+        const QPoint globalPosition = QWindowsGeometryHint::mapToGlobal(hwnd, winEventPosition);
+        const QPoint globalPosition2 = QWindowsGeometryHint::mapToGlobal(hwnd, QPoint(position.x() + deltaX, position.y() + deltaY));
+
+        touchPoint.normalPosition =
+            QPointF( (qreal)globalPosition.x() / screenGeometry.width(), (qreal)globalPosition.y() / screenGeometry.height() );
+
+        touchPoint.area.moveCenter(globalPosition);
+
+
+        QList<QWindowSystemInterface::TouchPoint> pointList;
+        pointList.append(touchPoint);
+        if (deltaX != 0 && deltaY != 0) {
+            if (had2ndTouchPoint)
+                touchPoint2.state = Qt::TouchPointMoved;
+            else
+                touchPoint2.state = Qt::TouchPointPressed;
+            had2ndTouchPoint = true;
+            touchPoint2.normalPosition =
+                QPointF( (qreal)globalPosition2.x() / screenGeometry.width(), (qreal)globalPosition2.y() / screenGeometry.height() );
+
+            touchPoint2.area.moveCenter(globalPosition2);
+            lastTouchPos = globalPosition2;
+            pointList.append(touchPoint2);
+        } else if (had2ndTouchPoint) {
+            touchPoint2.normalPosition =
+                QPointF( (qreal)lastTouchPos.x() / screenGeometry.width(), (qreal)lastTouchPos.y() / screenGeometry.height() );
+
+            touchPoint2.area.moveCenter(lastTouchPos);
+            touchPoint2.state = Qt::TouchPointReleased;
+            pointList.append(touchPoint2);
+            had2ndTouchPoint = false;
+        }
+
+        if (!m_touchDevice) {
+            m_touchDevice = new QTouchDevice;
+            // TODO: Device used to be hardcoded to screen in previous code.
+            m_touchDevice->setType(QTouchDevice::TouchScreen);
+            m_touchDevice->setCapabilities(QTouchDevice::Position | QTouchDevice::Area | QTouchDevice::NormalizedPosition);
+            QWindowSystemInterface::registerTouchDevice(m_touchDevice);
+        }
+
+        QWindowSystemInterface::handleTouchEvent(window, m_touchDevice, pointList);
+        // handle window focusing in/out
+        if (window != m_windowUnderMouse) {
+            if (m_windowUnderMouse) {
+                QWindowSystemInterface::handleLeaveEvent(m_windowUnderMouse);
+            }
+            if (window) {
+                QWindowSystemInterface::handleEnterEvent(window);
+            }
+            m_windowUnderMouse = window;
+        }
+
+        return true;
+    }
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 #endif
 }
 

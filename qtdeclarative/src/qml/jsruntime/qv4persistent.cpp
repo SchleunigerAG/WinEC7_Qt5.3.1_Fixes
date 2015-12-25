@@ -39,6 +39,10 @@
 **
 ****************************************************************************/
 
+// CHANGES SCHLEUNIGER AG, April 2015 :: START
+#define _CRT_BANNED_DEPRECATE( x )
+// CHANGES SCHLEUNIGER AG, April 2015 :: END
+
 #include "qv4persistent_p.h"
 #include "qv4mm_p.h"
 

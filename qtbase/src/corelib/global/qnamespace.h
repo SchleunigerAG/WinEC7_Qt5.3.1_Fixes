@@ -1586,7 +1586,10 @@ public:
         ZoomNativeGesture,
         SmartZoomNativeGesture,
         RotateNativeGesture,
-        SwipeNativeGesture
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+        SwipeNativeGesture,
+        DirectManipulation
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     };
 
 #endif // QT_NO_GESTURES

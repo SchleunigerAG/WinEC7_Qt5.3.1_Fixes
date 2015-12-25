@@ -48,6 +48,9 @@
 #ifdef Q_OS_WINCE
 #  include "qplatformfunctions_wince.h"
 #endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+#include <Windows.h>
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 
 QT_BEGIN_NAMESPACE
 
@@ -114,6 +117,9 @@ enum WindowsEventType // Simplify event types
     DisplayChangedEvent = 437,
     SettingChangedEvent = DisplayChangedEvent + 1,
     ContextMenu = 123,
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+    GestureEvent = 124,
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     UnknownEvent = 542
 };
 
@@ -234,6 +240,10 @@ inline QtWindows::WindowsEventType windowsEventType(UINT message, WPARAM wParamI
     case WM_ENDSESSION:
         return QtWindows::EndSessionApplicationEvent;
 #endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: START
+    case WM_GESTURE:
+        return QtWindows::GestureEvent;
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     default:
         break;
     }

@@ -1,0 +1,1008 @@
+diff --git a/BuildDependenciesSchleuniger.txt b/BuildDependenciesSchleuniger.txt
+new file mode 100644
+index 0000000..3d55874
+--- /dev/null
++++ b/BuildDependenciesSchleuniger.txt
+@@ -0,0 +1,7 @@
++The following tools were used to build:
++Microsoft Visual Studio 2008 SP1
++Toradex Windows EC 7 SDK
++NVidia Tegra Windows CE 6 Drivers ce6_tegra_250_5265393
++ActivePerl-5.16.3.1604-MSWin32-x64-298023
++python-3.4.2.amd64
++
+diff --git a/Schleuniger_Infos.txt b/Schleuniger_Infos.txt
+new file mode 100644
+index 0000000..89d4e02
+--- /dev/null
++++ b/Schleuniger_Infos.txt
+@@ -0,0 +1,8 @@
++Summary of the changes done by Schleuniger:
++
++5.3.1-V2-WinEC70Colibri-msvc2008
++- resolve NOMINMAX compiler error in QDateTime
++- add "#define _CRT_BANNED_DEPRECATE( x )" in files to resolve wince sdk compiler errors
++- add missing "#include "windows.h"" to fix compile errors
++- add KDAB fix for Gesture handling (no multi touch support)
++- fix font handling to be able to load a font from filesystem
+\ No newline at end of file
+diff --git a/configure-schleuniger.cmd b/configure-schleuniger.cmd
+new file mode 100644
+index 0000000..1a33846
+--- /dev/null
++++ b/configure-schleuniger.cmd
+@@ -0,0 +1,11 @@
++echo off
++echo --------------------------------------------------------------------------------
++echo WARNING: This batch file must be executed with the VISUAL STUDIO 2008 CONSOLE!!!
++echo --------------------------------------------------------------------------------
++pause
++echo --------------------------------------------------------------------------------
++echo Have you checked the correct directory name (Qt-Version, infix:VX, Platform) ?
++echo %CD%
++echo --------------------------------------------------------------------------------
++pause
++configure -prefix %CD%/qtbase -platform win32-msvc2008 -xplatform wince70colibri-armv4i-msvc2008 -qtlibinfix 5_3_1_V2-WinEC70Colibri-msvc2008 -qt-style-windows -ltcg -no-openssl -no-gif -no-libjpeg -no-accessibility -opengl es2 -opensource -confirm-license -skip qtactiveqt -skip qtmultimedia -skip qtwinextras -skip qttools -nomake examples -nomake tests
+diff --git a/qtbase/mkspecs/common/wince/qmake.conf b/qtbase/mkspecs/common/wince/qmake.conf
+index 73fb865..c2407df 100644
+--- a/qtbase/mkspecs/common/wince/qmake.conf
++++ b/qtbase/mkspecs/common/wince/qmake.conf
+@@ -17,12 +17,12 @@ QMAKE_LEX               = flex
+ QMAKE_LEXFLAGS          =
+ QMAKE_YACC              = byacc
+ QMAKE_YACCFLAGS         = -d
+-QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t-
++QMAKE_CFLAGS            = -nologo -Zm200 -QRfpe-
+ QMAKE_CFLAGS_WARN_ON    = -W3
+ QMAKE_CFLAGS_WARN_OFF   = -W0
+-QMAKE_CFLAGS_RELEASE    = -O2 -MD
+-QMAKE_CFLAGS_LTCG       = -GL
+-QMAKE_CFLAGS_DEBUG      = -DDEBUG -D_DEBUG -Zi -MDd
++QMAKE_CFLAGS_RELEASE    = -O2 -MT
++QMAKE_CFLAGS_LTCG       =
++QMAKE_CFLAGS_DEBUG      = -DDEBUG -D_DEBUG -Zi -MTd
+ QMAKE_CFLAGS_YACC       =
+ 
+ # Uncomment the following lines to reduce library sizes
+@@ -58,7 +58,7 @@ QMAKE_LINK              = link
+ QMAKE_LFLAGS            = /NOLOGO /NODEFAULTLIB:OLDNAMES.LIB
+ QMAKE_LFLAGS_RELEASE    = /INCREMENTAL:NO
+ QMAKE_LFLAGS_DEBUG      = /DEBUG
+-QMAKE_LFLAGS_LTCG       = /LTCG
++QMAKE_LFLAGS_LTCG       =
+ QMAKE_LIBS_NETWORK      = ws2.lib
+ QMAKE_LIBS_OPENGL       =
+ QMAKE_LIBS_COMPAT       =
+diff --git a/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qmake.conf b/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qmake.conf
+new file mode 100644
+index 0000000..64282af
+--- /dev/null
++++ b/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qmake.conf
+@@ -0,0 +1,52 @@
++# qmake configuration for Windows Embedded Compact 7 with VS2008 on ARM targets
++#
++# This is just a template for creating WEC7 mkspecs for ARM targets
++# Replace the SDK name with actual SDK name.
++
++include(../common/wince/qmake.conf)
++
++CE_SDK                  = Toradex_CE700
++CE_ARCH                 = ARMv4I
++QT_CONFIG              -= accessibility
++
++DEFINES                += QT_NO_CLIPBOARD QT_NO_ACCESSIBILITY QT_NOSTANDARDSHELL_UI_MODEL _CRT_SECURE_NO_DEPRECATE _WIN32_WCE=0x700 $$CE_ARCH _AMRV7_ armv7 _ARM_
++
++#QMAKE_CXXFLAGS += /P
++QMAKE_CFLAGS_RELEASE    += -O2 -MT
++QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi
++QMAKE_CFLAGS_DEBUG      += -Zi -MTd
++QMAKE_CFLAGS_RELEASE    -= -MD
++QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO -= -MD
++QMAKE_CFLAGS_DEBUG      -= -MDd
++QMAKE_CXXFLAGS_RELEASE  -= -MD
++QMAKE_CXXFLAGS_RELEASE  += -MT
++QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO += -MT
++QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -MD
++QMAKE_CXXFLAGS_DEBUG -= -MDd
++QMAKE_CXXFLAGS_DEBUG += -MTd
++#message( $$QMAKE_QMAKE_CXXFLAGS_RELEASE )
++#QMAKE_INCDIR            += $$(NV_WINCE_T2_PLAT)/include
++QMAKE_INCDIR_OPENGL_ES2  += $$(NV_WINCE_T2_PLAT)/include
++#message( $$QMAKE_INCDIR )
++#message( $$QMAKE_INCDIR_OPENGL )
++QMAKE_LFLAGS            = /MAP /DEBUG /OPT:REF /OPT:ICF
++QMAKE_LFLAGS_CONSOLE    = /SUBSYSTEM:WINDOWSCE,7.00 /MACHINE:THUMB /ENTRY:mainACRTStartup
++QMAKE_LFLAGS_WINDOWS    = /SUBSYSTEM:WINDOWSCE,7.00 /MACHINE:THUMB
++QMAKE_LFLAGS_DLL        = /SUBSYSTEM:WINDOWSCE,7.00 /MACHINE:THUMB /DLL /SAFESEH:NO
++QMAKE_LIBFLAGS_RELEASE  = /LTCG
++QMAKE_LIBS              = corelibc.lib coredll.lib
++QMAKE_LIBS_CORE         = corelibc.lib ole32.lib oleaut32.lib uuid.lib commctrl.lib coredll.lib winsock.lib
++QMAKE_LIBS_GUI          = ceshell.lib ole32.lib $$QMAKE_LIBS_CORE
++QMAKE_LIBS_NETWORK      = ws2.lib $$QMAKE_LIBS_GUI
++QMAKE_LIBS_OPENGL       =
++QMAKE_LIBS_COMPAT       =
++QMAKE_LIBS_OPENVG       = libopenvg.lib
++QMAKE_LIBS_OPENGL_ES2   = libEGL.lib libGLESv2.lib
++QMAKE_LIBDIR_OPENGL_ES2 = $$(NV_WINCE_T2_PLAT)/lib/release
++QMAKE_INCDIR_EGL        = $$(NV_WINCE_T2_PLAT)/include
++QMAKE_LIBDIR_EGL        = $$(NV_WINCE_T2_PLAT)/lib/release
++
++QMAKE_RC                = rc
++
++QMAKE_COMPILER_DEFINES -= _MSC_VER=1400
++QMAKE_COMPILER_DEFINES += _MSC_VER=1500
+diff --git a/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qplatformdefs.h b/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qplatformdefs.h
+new file mode 100644
+index 0000000..5dfbff8
+--- /dev/null
++++ b/qtbase/mkspecs/wince70colibri-armv4i-msvc2008/qplatformdefs.h
+@@ -0,0 +1,43 @@
++/****************************************************************************
++**
++** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
++** Contact: http://www.qt-project.org/legal
++**
++** This file is part of the qmake spec of the Qt Toolkit.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** Commercial License Usage
++** Licensees holding valid commercial Qt licenses may use this file in
++** accordance with the commercial license agreement provided with the
++** Software or, alternatively, in accordance with the terms contained in
++** a written agreement between you and Digia.  For licensing terms and
++** conditions see http://qt.digia.com/licensing.  For further information
++** use the contact form at http://qt.digia.com/contact-us.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 2.1 as published by the Free Software
++** Foundation and appearing in the file LICENSE.LGPL included in the
++** packaging of this file.  Please review the following information to
++** ensure the GNU Lesser General Public License version 2.1 requirements
++** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
++**
++** In addition, as a special exception, Digia gives you certain additional
++** rights.  These rights are described in the Digia Qt LGPL Exception
++** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
++**
++** GNU General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU
++** General Public License version 3.0 as published by the Free Software
++** Foundation and appearing in the file LICENSE.GPL included in the
++** packaging of this file.  Please review the following information to
++** ensure the GNU General Public License version 3.0 requirements will be
++** met: http://www.gnu.org/copyleft/gpl.html.
++**
++**
++** $QT_END_LICENSE$
++**
++****************************************************************************/
++
++#include "../common/wince/qplatformdefs.h"
++
+diff --git a/qtbase/src/corelib/global/qnamespace.h b/qtbase/src/corelib/global/qnamespace.h
+index fcd8d79..186e718 100644
+--- a/qtbase/src/corelib/global/qnamespace.h
++++ b/qtbase/src/corelib/global/qnamespace.h
+@@ -1586,7 +1586,10 @@ public:
+         ZoomNativeGesture,
+         SmartZoomNativeGesture,
+         RotateNativeGesture,
+-        SwipeNativeGesture
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++        SwipeNativeGesture,
++        DirectManipulation
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+     };
+ 
+ #endif // QT_NO_GESTURES
+diff --git a/qtbase/src/corelib/tools/qdatetime.h b/qtbase/src/corelib/tools/qdatetime.h
+index ecb2d2b..42a914e 100644
+--- a/qtbase/src/corelib/tools/qdatetime.h
++++ b/qtbase/src/corelib/tools/qdatetime.h
+@@ -119,7 +119,10 @@ QT_DEPRECATED inline bool setYMD(int y, int m, int d)
+     inline qint64 toJulianDay() const { return jd; }
+ 
+ private:
+-    static inline qint64 nullJd() { return std::numeric_limits<qint64>::min(); }
++    // CHANGES SCHLEUNIGER AG, April 2015 :: START
++    // https://bugreports.qt.io/browse/QTBUG-31469
++    static inline qint64 nullJd() { return (std::numeric_limits<qint64>::min)(); }
++    // CHANGES SCHLEUNIGER AG, April 2015 :: END
+     static inline qint64 minJd() { return Q_INT64_C(-784350574879); }
+     static inline qint64 maxJd() { return Q_INT64_C( 784354017364); }
+ 
+diff --git a/qtbase/src/plugins/platforms/windows/qplatformfunctions_wince.h b/qtbase/src/plugins/platforms/windows/qplatformfunctions_wince.h
+index 5f84d8e..131b578 100644
+--- a/qtbase/src/plugins/platforms/windows/qplatformfunctions_wince.h
++++ b/qtbase/src/plugins/platforms/windows/qplatformfunctions_wince.h
+@@ -87,14 +87,18 @@
+ #endif
+ 
+ #ifndef CAPTUREBLT
+-#define CAPTUREBLT                   (DWORD)0x40000000
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define CAPTUREBLT                   (DWORD)0x0
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
+ #endif
+ 
+ #define SW_SHOWMINIMIZED SW_MINIMIZE
+ #define SW_SHOWMINNOACTIVE SW_MINIMIZE
+ 
+ #ifndef ChildWindowFromPointEx
+-#define ChildWindowFromPointEx(a, b, c) ChildWindowFromPoint(a, b)
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#define ChildWindowFromPointEx(a, b, c) WindowFromPoint(b)
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ #endif
+ 
+ #ifndef CF_DIBV5
+@@ -271,15 +275,24 @@ typedef struct tagTTPOLYCURVE
+ #define WM_DRAWCLIPBOARD 0x0308
+ #endif
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include <QFileInfo>
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ inline bool IsIconic( HWND /*hWnd*/ )
+ {
+     return false;
+ }
+ 
+-inline int AddFontResourceExW( LPCWSTR /*name*/, DWORD /*fl*/, PVOID /*res*/)
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++inline int AddFontResourceExW( LPCWSTR name, DWORD /*fl*/, PVOID /*res*/)
+ {
+-    return 0;
++    QString fName = QString::fromWCharArray(name);
++    QFileInfo fileinfo(fName);
++    fName = fileinfo.absoluteFilePath();
++    return AddFontResource((LPCWSTR)fName.utf16());
+ }
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
+ 
+ inline bool RemoveFontResourceExW( LPCWSTR /*name*/, DWORD /*fl*/, PVOID /*pdv*/)
+ {
+diff --git a/qtbase/src/plugins/platforms/windows/qtwindows_additional.h b/qtbase/src/plugins/platforms/windows/qtwindows_additional.h
+index a38d593..2122e49 100644
+--- a/qtbase/src/plugins/platforms/windows/qtwindows_additional.h
++++ b/qtbase/src/plugins/platforms/windows/qtwindows_additional.h
+@@ -174,4 +174,10 @@ typedef TOUCHINPUT const * PCTOUCHINPUT;
+ 
+ #endif // if defined(Q_CC_MINGW) || !defined(TOUCHEVENTF_MOVE)
+ 
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#ifndef WM_GESTURE
++#  define WM_GESTURE 0x0119
++#endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
++
+ #endif // QTWINDOWS_ADDITIONAL_H
+diff --git a/qtbase/src/plugins/platforms/windows/qtwindowsglobal.h b/qtbase/src/plugins/platforms/windows/qtwindowsglobal.h
+index 47c29b1..9a4ea07 100644
+--- a/qtbase/src/plugins/platforms/windows/qtwindowsglobal.h
++++ b/qtbase/src/plugins/platforms/windows/qtwindowsglobal.h
+@@ -48,6 +48,9 @@
+ #ifdef Q_OS_WINCE
+ #  include "qplatformfunctions_wince.h"
+ #endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#include <Windows.h>
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ 
+ QT_BEGIN_NAMESPACE
+ 
+@@ -114,6 +117,9 @@ enum WindowsEventType // Simplify event types
+     DisplayChangedEvent = 437,
+     SettingChangedEvent = DisplayChangedEvent + 1,
+     ContextMenu = 123,
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++    GestureEvent = 124,
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+     UnknownEvent = 542
+ };
+ 
+@@ -234,6 +240,10 @@ inline QtWindows::WindowsEventType windowsEventType(UINT message, WPARAM wParamI
+     case WM_ENDSESSION:
+         return QtWindows::EndSessionApplicationEvent;
+ #endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++    case WM_GESTURE:
++        return QtWindows::GestureEvent;
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+     default:
+         break;
+     }
+diff --git a/qtbase/src/plugins/platforms/windows/qwindowscontext.cpp b/qtbase/src/plugins/platforms/windows/qwindowscontext.cpp
+index e881a39..93bbed6 100644
+--- a/qtbase/src/plugins/platforms/windows/qwindowscontext.cpp
++++ b/qtbase/src/plugins/platforms/windows/qwindowscontext.cpp
+@@ -647,6 +647,11 @@ QWindowsWindow *QWindowsContext::findPlatformWindowAt(HWND parent,
+             if (QWindowsWindow *window = findPlatformWindow(child))
+                 result = window;
+             parent = child;
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#ifdef Q_OS_WINCE
++            break;
++#endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+         } else {
+             break;
+         }
+@@ -843,6 +848,10 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
+         return QWindowsInputContext::instance()->endComposition(hwnd);
+     case QtWindows::InputMethodRequest:
+         return QWindowsInputContext::instance()->handleIME_Request(wParam, lParam, result);
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++    case QtWindows::GestureEvent:
++        return d->m_mouseHandler.translateTouchEvent(platformWindow->window(), hwnd, et, msg, result);
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+     case QtWindows::InputMethodOpenCandidateWindowEvent:
+     case QtWindows::InputMethodCloseCandidateWindowEvent:
+         // TODO: Release/regrab mouse if a popup has mouse grab.
+diff --git a/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.cpp b/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.cpp
+index 77e216a..611f100 100644
+--- a/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.cpp
++++ b/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.cpp
+@@ -55,6 +55,9 @@
+ #include <QtCore/QScopedArrayPointer>
+ 
+ #include <windowsx.h>
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#include <WinUser.h>
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ 
+ QT_BEGIN_NAMESPACE
+ 
+@@ -397,9 +400,11 @@ bool QWindowsMouseHandler::translateMouseWheelEvent(QWindow *window, HWND,
+ }
+ 
+ // from bool QApplicationPrivate::translateTouchEvent()
+-bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND,
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND hwnd,
+                                                QtWindows::WindowsEventType,
+                                                MSG msg, LRESULT *)
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ {
+ #ifndef Q_OS_WINCE
+     typedef QWindowSystemInterface::TouchPoint QTouchPoint;
+@@ -478,7 +483,106 @@ bool QWindowsMouseHandler::translateTouchEvent(QWindow *window, HWND,
+                                              touchPoints);
+     return true;
+ #else
+-    return false;
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++    GESTUREINFO gi;
++    memset(&gi, 0, sizeof(GESTUREINFO));
++    gi.cbSize = sizeof(GESTUREINFO);
++
++    if (!GetGestureInfo((HGESTUREINFO)msg.lParam, &gi))
++        return false;
++
++    ulong timestamp = 0;
++    const QPoint position = QPoint(gi.ptsLocation.x, gi.ptsLocation.y);
++    Qt::NativeGestureType gestureType = (Qt::NativeGestureType)402; // ### "None"
++    qCDebug(lcQpaEvents) << gi.dwID << gi.dwFlags << gi.dwInstanceID << gi.dwSequenceID;
++    switch (gi.dwID) {
++    case GID_DIRECTMANIPULATION:
++        gestureType = Qt::DirectManipulation;
++        break;
++    default:
++        break;
++    }
++
++    if (gestureType != Qt::DirectManipulation) {
++        return true;
++    } else {
++        static QPoint lastTouchPos;
++        const QRect screenGeometry = window->screen()->geometry();
++        QWindowSystemInterface::TouchPoint touchPoint;
++        static QWindowSystemInterface::TouchPoint touchPoint2;
++        touchPoint.id = 0;//gi.dwInstanceID;
++        touchPoint.pressure = 1.0;
++
++        if (gi.dwFlags & GF_BEGIN)
++            touchPoint.state = Qt::TouchPointPressed;
++        else if (gi.dwFlags & GF_END)
++            touchPoint.state = Qt::TouchPointReleased;
++        else if (gi.dwFlags == 0)
++            touchPoint.state = Qt::TouchPointMoved;
++        else
++            return true;
++        touchPoint2.pressure = 1.0;
++        touchPoint2.id = 1;
++        const QPoint winEventPosition = position;
++        const int deltaX = GID_DIRECTMANIPULATION_DELTA_X(gi.ullArguments);
++        const int deltaY = GID_DIRECTMANIPULATION_DELTA_Y(gi.ullArguments);
++        //Touch points are taken from the whole screen so map the position to the screen
++        const QPoint globalPosition = QWindowsGeometryHint::mapToGlobal(hwnd, winEventPosition);
++        const QPoint globalPosition2 = QWindowsGeometryHint::mapToGlobal(hwnd, QPoint(position.x() + deltaX, position.y() + deltaY));
++
++        touchPoint.normalPosition =
++            QPointF( (qreal)globalPosition.x() / screenGeometry.width(), (qreal)globalPosition.y() / screenGeometry.height() );
++
++        touchPoint.area.moveCenter(globalPosition);
++
++
++        QList<QWindowSystemInterface::TouchPoint> pointList;
++        pointList.append(touchPoint);
++        if (deltaX != 0 && deltaY != 0) {
++            if (had2ndTouchPoint)
++                touchPoint2.state = Qt::TouchPointMoved;
++            else
++                touchPoint2.state = Qt::TouchPointPressed;
++            had2ndTouchPoint = true;
++            touchPoint2.normalPosition =
++                QPointF( (qreal)globalPosition2.x() / screenGeometry.width(), (qreal)globalPosition2.y() / screenGeometry.height() );
++
++            touchPoint2.area.moveCenter(globalPosition2);
++            lastTouchPos = globalPosition2;
++            pointList.append(touchPoint2);
++        } else if (had2ndTouchPoint) {
++            touchPoint2.normalPosition =
++                QPointF( (qreal)lastTouchPos.x() / screenGeometry.width(), (qreal)lastTouchPos.y() / screenGeometry.height() );
++
++            touchPoint2.area.moveCenter(lastTouchPos);
++            touchPoint2.state = Qt::TouchPointReleased;
++            pointList.append(touchPoint2);
++            had2ndTouchPoint = false;
++        }
++
++        if (!m_touchDevice) {
++            m_touchDevice = new QTouchDevice;
++            // TODO: Device used to be hardcoded to screen in previous code.
++            m_touchDevice->setType(QTouchDevice::TouchScreen);
++            m_touchDevice->setCapabilities(QTouchDevice::Position | QTouchDevice::Area | QTouchDevice::NormalizedPosition);
++            QWindowSystemInterface::registerTouchDevice(m_touchDevice);
++        }
++
++        QWindowSystemInterface::handleTouchEvent(window, m_touchDevice, pointList);
++        // handle window focusing in/out
++        if (window != m_windowUnderMouse) {
++            if (m_windowUnderMouse) {
++                QWindowSystemInterface::handleLeaveEvent(m_windowUnderMouse);
++            }
++            if (window) {
++                QWindowSystemInterface::handleEnterEvent(window);
++            }
++            m_windowUnderMouse = window;
++        }
++
++        return true;
++    }
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ #endif
+ }
+ 
+diff --git a/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.h b/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.h
+index 3b2dd2b..8195c2d 100644
+--- a/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.h
++++ b/qtbase/src/plugins/platforms/windows/qwindowsmousehandler.h
+@@ -85,6 +85,11 @@ private:
+     QTouchDevice *m_touchDevice;
+     bool m_leftButtonDown;
+     QWindow *m_previousCaptureWindow;
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#ifdef Q_OS_WINCE
++    bool had2ndTouchPoint;
++#endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+ };
+ 
+ Qt::MouseButtons QWindowsMouseHandler::keyStateToMouseButtons(int wParam)
+diff --git a/qtbase/src/plugins/platforms/windows/qwindowswindow.cpp b/qtbase/src/plugins/platforms/windows/qwindowswindow.cpp
+index 99d51f8..ee777f9 100644
+--- a/qtbase/src/plugins/platforms/windows/qwindowswindow.cpp
++++ b/qtbase/src/plugins/platforms/windows/qwindowswindow.cpp
+@@ -591,6 +591,14 @@ QWindowsWindowData
+                                  context->frameX, context->frameY,
+                                  context->frameWidth, context->frameHeight,
+                                  parentHandle, NULL, appinst, NULL);
++// CHANGES SCHLEUNIGER AG, September 2015 :: START
++#ifdef Q_OS_WINCE
++    bool success = DisableGestures(result.hwnd, TGF_GID_ALL, TGF_SCOPE_WINDOW);
++    if (success) {
++        success = EnableGestures(result.hwnd, TGF_GID_DIRECTMANIPULATION, TGF_SCOPE_WINDOW);
++    }
++#endif
++// CHANGES SCHLEUNIGER AG, September 2015 :: END
+     qCDebug(lcQpaWindows).nospace()
+         << "CreateWindowEx: returns " << w << ' ' << result.hwnd << " obtained geometry: "
+         << context->obtainedGeometry << context->margins;
+diff --git a/qtdeclarative/src/3rdparty/double-conversion/double-conversion.cc b/qtdeclarative/src/3rdparty/double-conversion/double-conversion.cc
+index 434b6c9..c7b4221 100644
+--- a/qtdeclarative/src/3rdparty/double-conversion/double-conversion.cc
++++ b/qtdeclarative/src/3rdparty/double-conversion/double-conversion.cc
+@@ -25,6 +25,10 @@
+ // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <limits.h>
+ #include <math.h>
+ 
+diff --git a/qtdeclarative/src/qml/compiler/qqmltypecompiler.cpp b/qtdeclarative/src/qml/compiler/qqmltypecompiler.cpp
+index 298e769..b362271 100644
+--- a/qtdeclarative/src/qml/compiler/qqmltypecompiler.cpp
++++ b/qtdeclarative/src/qml/compiler/qqmltypecompiler.cpp
+@@ -39,6 +39,10 @@
+ **
+ ****************************************************************************/
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include "qqmltypecompiler_p.h"
+ 
+ #include <private/qqmlirbuilder_p.h>
+diff --git a/qtdeclarative/src/qml/compiler/qv4isel_moth.cpp b/qtdeclarative/src/qml/compiler/qv4isel_moth.cpp
+index b745880..8b2ed6c 100644
+--- a/qtdeclarative/src/qml/compiler/qv4isel_moth.cpp
++++ b/qtdeclarative/src/qml/compiler/qv4isel_moth.cpp
+@@ -39,6 +39,10 @@
+ **
+ ****************************************************************************/
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include "qv4isel_util_p.h"
+ #include "qv4isel_moth_p.h"
+ #include "qv4vme_moth_p.h"
+diff --git a/qtdeclarative/src/qml/jsruntime/qv4persistent.cpp b/qtdeclarative/src/qml/jsruntime/qv4persistent.cpp
+index b6d6157..03efe67 100644
+--- a/qtdeclarative/src/qml/jsruntime/qv4persistent.cpp
++++ b/qtdeclarative/src/qml/jsruntime/qv4persistent.cpp
+@@ -39,6 +39,10 @@
+ **
+ ****************************************************************************/
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include "qv4persistent_p.h"
+ #include "qv4mm_p.h"
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/dec/idec.c b/qtimageformats/src/3rdparty/libwebp/src/dec/idec.c
+index 1e35aa7..47a7b4a 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/dec/idec.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/dec/idec.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: somnath@google.com (Somnath Banerjee)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <string.h>
+ #include <stdlib.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/dec/io.c b/qtimageformats/src/3rdparty/libwebp/src/dec/io.c
+index 8fdc65c..3aa8ef5 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/dec/io.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/dec/io.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include "../dec/vp8i.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/dec/layer.c b/qtimageformats/src/3rdparty/libwebp/src/dec/layer.c
+index b08c419..f264a62 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/dec/layer.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/dec/layer.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/demux/demux.c b/qtimageformats/src/3rdparty/libwebp/src/demux/demux.c
+index 62834cd..1ba7711 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/demux/demux.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/demux/demux.c
+@@ -10,6 +10,10 @@
+ //  WebP container demux.
+ //
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #ifdef HAVE_CONFIG_H
+ #include "config.h"
+ #endif
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/dsp/enc.c b/qtimageformats/src/3rdparty/libwebp/src/dsp/enc.c
+index e961de5..5fe1561 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/dsp/enc.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/dsp/enc.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>  // for abs()
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/alpha.c b/qtimageformats/src/3rdparty/libwebp/src/enc/alpha.c
+index 292afe9..76210e8 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/alpha.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/alpha.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references.c b/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references.c
+index d282b60..bd61e6e 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references.c
+@@ -10,6 +10,10 @@
+ // Author: Jyrki Alakuijala (jyrki@google.com)
+ //
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <math.h>
+ #include <stdio.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/filter.c b/qtimageformats/src/3rdparty/libwebp/src/enc/filter.c
+index 4657000..222308f 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/filter.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/filter.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: somnath@google.com (Somnath Banerjee)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include "./vp8enci.h"
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/frame.c b/qtimageformats/src/3rdparty/libwebp/src/enc/frame.c
+index f835feb..c0db1ee 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/frame.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/frame.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/picture.c b/qtimageformats/src/3rdparty/libwebp/src/enc/picture.c
+index 886a3f9..3b70db9 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/picture.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/picture.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <math.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/quant.c b/qtimageformats/src/3rdparty/libwebp/src/enc/quant.c
+index 1e1652c..1ddf84f 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/quant.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/quant.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <math.h>
+ #include <stdlib.h>  // for abs()
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/syntax.c b/qtimageformats/src/3rdparty/libwebp/src/enc/syntax.c
+index dfa5676..4a21970 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/syntax.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/syntax.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ 
+ #include "../utils/utils.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/token.c b/qtimageformats/src/3rdparty/libwebp/src/enc/token.c
+index 63926b7..fd14d1e 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/token.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/token.c
+@@ -16,6 +16,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/vp8l.c b/qtimageformats/src/3rdparty/libwebp/src/enc/vp8l.c
+index 2a404b8..e37ecdd 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/vp8l.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/vp8l.c
+@@ -12,6 +12,10 @@
+ // Author: Vikas Arora (vikaas.arora@gmail.com)
+ //
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/enc/webpenc.c b/qtimageformats/src/3rdparty/libwebp/src/enc/webpenc.c
+index a086f10..93bfc1c 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/enc/webpenc.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/enc/webpenc.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/mux/muxedit.c b/qtimageformats/src/3rdparty/libwebp/src/mux/muxedit.c
+index 804460b..9a79f55 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/mux/muxedit.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/mux/muxedit.c
+@@ -12,6 +12,10 @@
+ // Authors: Urvang (urvang@google.com)
+ //          Vikas (vikasa@google.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include "./muxi.h"
+ #include "../utils/utils.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/mux/muxinternal.c b/qtimageformats/src/3rdparty/libwebp/src/mux/muxinternal.c
+index 2aa822b..49efa39 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/mux/muxinternal.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/mux/muxinternal.c
+@@ -12,6 +12,10 @@
+ // Authors: Urvang (urvang@google.com)
+ //          Vikas (vikasa@google.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include "./muxi.h"
+ #include "../utils/utils.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/mux/muxread.c b/qtimageformats/src/3rdparty/libwebp/src/mux/muxread.c
+index 2ffb2ef..12374cf 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/mux/muxread.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/mux/muxread.c
+@@ -12,6 +12,10 @@
+ // Authors: Urvang (urvang@google.com)
+ //          Vikas (vikasa@google.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include "./muxi.h"
+ #include "../utils/utils.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/alpha_processing.c b/qtimageformats/src/3rdparty/libwebp/src/utils/alpha_processing.c
+index 1e279a8..66fd332 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/alpha_processing.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/alpha_processing.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include "./alpha_processing.h"
+ 
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/bit_reader.c b/qtimageformats/src/3rdparty/libwebp/src/utils/bit_reader.c
+index d6f03bb..10257ab 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/bit_reader.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/bit_reader.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include "./bit_reader.h"
+ 
+ #ifndef USE_RIGHT_JUSTIFY
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/bit_writer.c b/qtimageformats/src/3rdparty/libwebp/src/utils/bit_writer.c
+index dd058fa..ec40724 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/bit_writer.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/bit_writer.c
+@@ -12,6 +12,10 @@
+ // Author: Skal (pascal.massimino@gmail.com)
+ //         Vikas Arora (vikaas.arora@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <string.h>   // for memcpy()
+ #include <stdlib.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/color_cache.c b/qtimageformats/src/3rdparty/libwebp/src/utils/color_cache.c
+index dc08469..29a177f 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/color_cache.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/color_cache.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Jyrki Alakuijala (jyrki@google.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include "./color_cache.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/huffman.c b/qtimageformats/src/3rdparty/libwebp/src/utils/huffman.c
+index d9b5cab..257eb6d 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/huffman.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/huffman.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Urvang Joshi (urvang@google.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_encode.c b/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_encode.c
+index c649e2d..7184c40 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_encode.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_encode.c
+@@ -11,6 +11,10 @@
+ //
+ // Entropy encoding (Huffman) for webp lossless.
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels.c b/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels.c
+index a6a8af3..e233a1b 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels.c
+@@ -12,6 +12,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ 
+ #include "./quant_levels.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/rescaler.c b/qtimageformats/src/3rdparty/libwebp/src/utils/rescaler.c
+index 03ba912..f6c0402 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/rescaler.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/rescaler.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <stdlib.h>
+ #include "./rescaler.h"
+diff --git a/qtimageformats/src/3rdparty/libwebp/src/utils/thread.c b/qtimageformats/src/3rdparty/libwebp/src/utils/thread.c
+index e3117b8..f90c033 100644
+--- a/qtimageformats/src/3rdparty/libwebp/src/utils/thread.c
++++ b/qtimageformats/src/3rdparty/libwebp/src/utils/thread.c
+@@ -11,6 +11,10 @@
+ //
+ // Author: Skal (pascal.massimino@gmail.com)
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#include "windows.h"
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <assert.h>
+ #include <string.h>   // for memset()
+ #include "./thread.h"
+diff --git a/qtxmlpatterns/src/xmlpatterns/data/qcommonvalues.cpp b/qtxmlpatterns/src/xmlpatterns/data/qcommonvalues.cpp
+index 086570a..c00f9c8 100644
+--- a/qtxmlpatterns/src/xmlpatterns/data/qcommonvalues.cpp
++++ b/qtxmlpatterns/src/xmlpatterns/data/qcommonvalues.cpp
+@@ -39,6 +39,10 @@
+ **
+ ****************************************************************************/
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <limits>
+ 
+ #include "qabstractfloat_p.h"
+diff --git a/qtxmlpatterns/src/xmlpatterns/parser/qquerytransformparser.cpp b/qtxmlpatterns/src/xmlpatterns/parser/qquerytransformparser.cpp
+index d6a4fda..7d816ac 100644
+--- a/qtxmlpatterns/src/xmlpatterns/parser/qquerytransformparser.cpp
++++ b/qtxmlpatterns/src/xmlpatterns/parser/qquerytransformparser.cpp
+@@ -178,6 +178,10 @@
+ //
+ // We mean it.
+ 
++// CHANGES SCHLEUNIGER AG, April 2015 :: START
++#define _CRT_BANNED_DEPRECATE( x )
++// CHANGES SCHLEUNIGER AG, April 2015 :: END
++
+ #include <limits>
+ 
+ #include <QUrl>
