@@ -1,4 +1,4 @@
-TARGET = windowsprintersupport
+TARGET = windowsprintersupport5_3_1_V3-WinEC70Colibri-msvc2008
 MODULE = windowsprintersupport
 PLUGIN_TYPE = printsupport
 PLUGIN_CLASS_NAME = QWindowsPrinterSupportPlugin

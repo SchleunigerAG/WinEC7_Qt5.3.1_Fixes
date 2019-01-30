@@ -1,7 +1,7 @@
 # Avoid clash with a variable named `slots' in a Quartz header
 CONFIG += no_keywords
 
-TARGET = qavfcamera
+TARGET = qavfcamera5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private network
 
 PLUGIN_TYPE = mediaservice

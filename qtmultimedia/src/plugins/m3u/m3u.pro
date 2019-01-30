@@ -1,4 +1,4 @@
-TARGET = qtmultimedia_m3u
+TARGET = qtmultimedia_m3u5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private
 
 PLUGIN_TYPE=playlistformats

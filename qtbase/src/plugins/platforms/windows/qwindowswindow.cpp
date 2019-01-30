@@ -591,6 +591,14 @@ QWindowsWindowData
                                  context->frameX, context->frameY,
                                  context->frameWidth, context->frameHeight,
                                  parentHandle, NULL, appinst, NULL);
+// CHANGES SCHLEUNIGER AG, September 2015 :: START [add KDAB fix for Gesture handling (no multi touch support)]
+#ifdef Q_OS_WINCE
+    bool success = DisableGestures(result.hwnd, TGF_GID_ALL, TGF_SCOPE_WINDOW);
+    if (success) {
+        success = EnableGestures(result.hwnd, TGF_GID_DIRECTMANIPULATION, TGF_SCOPE_WINDOW);
+    }
+#endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     qCDebug(lcQpaWindows).nospace()
         << "CreateWindowEx: returns " << w << ' ' << result.hwnd << " obtained geometry: "
         << context->obtainedGeometry << context->margins;

@@ -1,4 +1,4 @@
-TARGET = qsqldb2
+TARGET = qsqldb25_3_1_V3-WinEC70Colibri-msvc2008
 
 SOURCES = main.cpp
 OTHER_FILES += db2.json

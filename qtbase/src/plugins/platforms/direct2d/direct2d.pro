@@ -1,4 +1,4 @@
-TARGET = qdirect2d
+TARGET = qdirect2d5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = platforms
 PLUGIN_CLASS_NAME = QWindowsDirect2DIntegrationPlugin

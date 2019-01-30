@@ -1,4 +1,4 @@
-TARGET = qtaudio_opensles
+TARGET = qtaudio_opensles5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private
 
 PLUGIN_TYPE = audio

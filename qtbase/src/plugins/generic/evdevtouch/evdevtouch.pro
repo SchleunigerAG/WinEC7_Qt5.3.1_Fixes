@@ -1,4 +1,4 @@
-TARGET = qevdevtouchplugin
+TARGET = qevdevtouchplugin5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = generic
 PLUGIN_EXTENDS = -

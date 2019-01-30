@@ -611,22 +611,10 @@ void QGestureManager::deliverEvents(const QSet<QGesture *> &gestures,
             if (gesture->hasHotSpot()) {
                 // guess the target widget using the hotspot of the gesture
                 QPoint pt = gesture->hotSpot().toPoint();
-
-				// CHANGES SCHLEUNIGER AG, April 2015 :: START
-				QWidget *tar = Q_NULLPTR;
-				if (QWidget *oWidget = qobject_cast<QWidget *>(qGuiApp->touchObject())) {
-					tar = oWidget->childAt(pt);
-				}
-				else {
-					Q_FOREACH (QWidget *topLevel, qApp->topLevelWidgets()) {
-						tar = topLevel->childAt(pt);
-						if (tar)
-							break;
-					}
-				}
-				target = tar;
-				// CHANGES SCHLEUNIGER AG, April 2015 :: END
-
+                if (QWidget *topLevel = qApp->topLevelAt(pt)) {
+                    QWidget *child = topLevel->childAt(topLevel->mapFromGlobal(pt));
+                    target = child ? child : topLevel;
+                }
             } else {
                 // or use the context of the gesture
                 QObject *context = m_gestureOwners.value(gesture, 0);

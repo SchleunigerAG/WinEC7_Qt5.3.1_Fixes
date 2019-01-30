@@ -1,4 +1,4 @@
-TARGET = qtmedia_qnx
+TARGET = qtmedia_qnx5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private gui-private
 
 PLUGIN_TYPE=mediaservice

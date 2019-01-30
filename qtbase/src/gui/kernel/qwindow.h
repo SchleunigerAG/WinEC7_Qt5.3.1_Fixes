@@ -251,10 +251,6 @@ public:
     virtual QAccessibleInterface *accessibleRoot() const;
     virtual QObject *focusObject() const;
 
-	// CHANGES SCHLEUNIGER AG, April 2015 :: START
-	virtual QObject *currentWidget() const;
-	// CHANGES SCHLEUNIGER AG, April 2015 :: END
-
     QPoint mapToGlobal(const QPoint &pos) const;
     QPoint mapFromGlobal(const QPoint &pos) const;
 

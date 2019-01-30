@@ -1,4 +1,4 @@
-TARGET  = qsvgicon
+TARGET  = qsvgicon5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = iconengines
 PLUGIN_EXTENDS = svg

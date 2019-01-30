@@ -4,7 +4,7 @@ load(qt_build_config)
 # Avoid clash with a variable named `slots' in a Quartz header
 CONFIG += no_keywords
 
-TARGET = qavfmediaplayer
+TARGET = qavfmediaplayer5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private network
 
 PLUGIN_TYPE = mediaservice

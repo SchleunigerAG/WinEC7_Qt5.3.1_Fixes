@@ -1,4 +1,4 @@
-TARGET = qtaudio_windows
+TARGET = qtaudio_windows5_3_1_V3-WinEC70Colibri-msvc2008
 QT += multimedia-private
 
 PLUGIN_TYPE = audio

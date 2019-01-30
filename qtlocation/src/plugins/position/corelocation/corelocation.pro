@@ -1,4 +1,4 @@
-TARGET = qtposition_cl
+TARGET = qtposition_cl5_3_1_V3-WinEC70Colibri-msvc2008
 QT = core positioning
 
 PLUGIN_TYPE = position

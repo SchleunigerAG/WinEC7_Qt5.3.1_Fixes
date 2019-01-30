@@ -1,4 +1,4 @@
-TARGET = qtposition_blackberry
+TARGET = qtposition_blackberry5_3_1_V3-WinEC70Colibri-msvc2008
 QT = core positioning
 
 PLUGIN_TYPE = position

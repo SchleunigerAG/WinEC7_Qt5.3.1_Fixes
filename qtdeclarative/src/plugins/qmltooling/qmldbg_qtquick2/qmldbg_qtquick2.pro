@@ -1,4 +1,4 @@
-TARGET = qmldbg_qtquick2
+TARGET = qmldbg_qtquick25_3_1_V3-WinEC70Colibri-msvc2008
 QT       += qml-private quick-private core-private gui-private
 
 PLUGIN_TYPE = qmltooling

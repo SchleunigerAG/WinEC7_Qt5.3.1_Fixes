@@ -87,7 +87,7 @@
 #endif
 
 #ifndef CAPTUREBLT
-// CHANGES SCHLEUNIGER AG, April 2015 :: START
+// CHANGES SCHLEUNIGER AG, April 2015 :: START [fix for creating screenshots]
 #define CAPTUREBLT                   (DWORD)0x0
 // CHANGES SCHLEUNIGER AG, April 2015 :: END
 #endif
@@ -96,7 +96,9 @@
 #define SW_SHOWMINNOACTIVE SW_MINIMIZE
 
 #ifndef ChildWindowFromPointEx
-#define ChildWindowFromPointEx(a, b, c) ChildWindowFromPoint(a, b)
+// CHANGES SCHLEUNIGER AG, September 2015 :: START [add KDAB fix for Gesture handling (no multi touch support)]
+#define ChildWindowFromPointEx(a, b, c) WindowFromPoint(b)
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
 #endif
 
 #ifndef CF_DIBV5
@@ -273,7 +275,7 @@ typedef struct tagTTPOLYCURVE
 #define WM_DRAWCLIPBOARD 0x0308
 #endif
 
-// CHANGES SCHLEUNIGER AG, April 2015 :: START
+// CHANGES SCHLEUNIGER AG, April 2015 :: START [fix font handling to be able to load a font from filesystem]
 #include <QFileInfo>
 // CHANGES SCHLEUNIGER AG, April 2015 :: END
 
@@ -282,13 +284,13 @@ inline bool IsIconic( HWND /*hWnd*/ )
     return false;
 }
 
-// CHANGES SCHLEUNIGER AG, April 2015 :: START
+// CHANGES SCHLEUNIGER AG, April 2015 :: START [fix font handling to be able to load a font from filesystem]
 inline int AddFontResourceExW( LPCWSTR name, DWORD /*fl*/, PVOID /*res*/)
 {
-	QString fName = QString::fromWCharArray(name);
-	QFileInfo fileinfo(fName);
-	fName = fileinfo.absoluteFilePath();
-	return AddFontResource((LPCWSTR)fName.utf16());
+    QString fName = QString::fromWCharArray(name);
+    QFileInfo fileinfo(fName);
+    fName = fileinfo.absoluteFilePath();
+    return AddFontResource((LPCWSTR)fName.utf16());
 }
 // CHANGES SCHLEUNIGER AG, April 2015 :: END
 

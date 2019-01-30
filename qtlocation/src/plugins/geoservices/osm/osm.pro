@@ -1,4 +1,4 @@
-TARGET = qtgeoservices_osm
+TARGET = qtgeoservices_osm5_3_1_V3-WinEC70Colibri-msvc2008
 QT += location-private positioning-private network
 
 PLUGIN_TYPE = geoservices

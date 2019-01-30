@@ -647,6 +647,11 @@ QWindowsWindow *QWindowsContext::findPlatformWindowAt(HWND parent,
             if (QWindowsWindow *window = findPlatformWindow(child))
                 result = window;
             parent = child;
+// CHANGES SCHLEUNIGER AG, September 2015 :: START [add KDAB fix for Gesture handling (no multi touch support)]
+#ifdef Q_OS_WINCE
+            break;
+#endif
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
         } else {
             break;
         }
@@ -843,6 +848,10 @@ bool QWindowsContext::windowsProc(HWND hwnd, UINT message,
         return QWindowsInputContext::instance()->endComposition(hwnd);
     case QtWindows::InputMethodRequest:
         return QWindowsInputContext::instance()->handleIME_Request(wParam, lParam, result);
+// CHANGES SCHLEUNIGER AG, September 2015 :: START [add KDAB fix for Gesture handling (no multi touch support)]
+    case QtWindows::GestureEvent:
+        return d->m_mouseHandler.translateTouchEvent(platformWindow->window(), hwnd, et, msg, result);
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     case QtWindows::InputMethodOpenCandidateWindowEvent:
     case QtWindows::InputMethodCloseCandidateWindowEvent:
         // TODO: Release/regrab mouse if a popup has mouse grab.

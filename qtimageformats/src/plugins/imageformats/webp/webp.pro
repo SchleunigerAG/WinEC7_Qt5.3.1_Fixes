@@ -1,4 +1,4 @@
-TARGET  = qwebp
+TARGET  = qwebp5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = imageformats
 PLUGIN_CLASS_NAME = QWebpPlugin

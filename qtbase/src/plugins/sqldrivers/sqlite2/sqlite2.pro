@@ -1,4 +1,4 @@
-TARGET = qsqlite2
+TARGET = qsqlite25_3_1_V3-WinEC70Colibri-msvc2008
 
 SOURCES = smain.cpp
 OTHER_FILES += sqlite2.json

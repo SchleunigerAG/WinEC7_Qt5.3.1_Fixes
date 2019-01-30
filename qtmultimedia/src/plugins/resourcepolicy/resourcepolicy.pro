@@ -1,4 +1,4 @@
-TARGET = resourceqt
+TARGET = resourceqt5_3_1_V3-WinEC70Colibri-msvc2008
 
 QT += multimedia-private
 CONFIG += no_private_qt_headers_warning link_pkgconfig

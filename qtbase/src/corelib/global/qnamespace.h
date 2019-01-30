@@ -1586,7 +1586,10 @@ public:
         ZoomNativeGesture,
         SmartZoomNativeGesture,
         RotateNativeGesture,
-        SwipeNativeGesture
+// CHANGES SCHLEUNIGER AG, September 2015 :: START [add KDAB fix for Gesture handling (no multi touch support)]
+        SwipeNativeGesture,
+        DirectManipulation
+// CHANGES SCHLEUNIGER AG, September 2015 :: END
     };
 
 #endif // QT_NO_GESTURES

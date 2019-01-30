@@ -1,4 +1,4 @@
-TARGET = qqnx
+TARGET = qqnx5_3_1_V3-WinEC70Colibri-msvc2008
 
 QT += platformsupport-private core-private gui-private
 

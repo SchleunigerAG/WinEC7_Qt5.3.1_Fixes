@@ -1,4 +1,4 @@
-TARGET      = qdeclarativeview
+TARGET      = qdeclarativeview5_3_1_V3-WinEC70Colibri-msvc2008
 QT         += declarative widgets designer
 
 PLUGIN_TYPE = designer

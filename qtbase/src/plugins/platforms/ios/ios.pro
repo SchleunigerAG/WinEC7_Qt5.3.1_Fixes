@@ -1,4 +1,4 @@
-TARGET = qios
+TARGET = qios5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = platforms
 PLUGIN_CLASS_NAME = QIOSIntegrationPlugin

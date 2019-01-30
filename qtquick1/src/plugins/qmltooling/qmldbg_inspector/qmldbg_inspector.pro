@@ -1,4 +1,4 @@
-TARGET = qmldbg_inspector
+TARGET = qmldbg_inspector5_3_1_V3-WinEC70Colibri-msvc2008
 QT       += declarative declarative-private gui widgets core-private
 
 PLUGIN_TYPE = qml1tooling

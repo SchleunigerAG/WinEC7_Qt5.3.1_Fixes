@@ -1,4 +1,4 @@
-TARGET = qgtk2
+TARGET = qgtk25_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = platformthemes
 PLUGIN_EXTENDS = -

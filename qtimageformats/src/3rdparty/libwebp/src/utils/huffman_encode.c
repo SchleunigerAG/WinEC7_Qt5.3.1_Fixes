@@ -11,7 +11,7 @@
 //
 // Entropy encoding (Huffman) for webp lossless.
 
-// CHANGES SCHLEUNIGER AG, April 2015 :: START
+// CHANGES SCHLEUNIGER AG, April 2015 :: START [add missing "#include "windows.h"" to fix compile errors]
 #include "windows.h"
 // CHANGES SCHLEUNIGER AG, April 2015 :: END
 

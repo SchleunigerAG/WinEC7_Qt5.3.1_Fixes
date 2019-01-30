@@ -1,4 +1,4 @@
-TARGET = cupsprintersupport
+TARGET = cupsprintersupport5_3_1_V3-WinEC70Colibri-msvc2008
 MODULE = cupsprintersupport
 PLUGIN_TYPE = printsupport
 PLUGIN_CLASS_NAME = QCupsPrinterSupportPlugin

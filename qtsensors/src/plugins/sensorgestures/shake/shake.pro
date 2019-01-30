@@ -1,4 +1,4 @@
-TARGET = qtsensorgestures_shakeplugin
+TARGET = qtsensorgestures_shakeplugin5_3_1_V3-WinEC70Colibri-msvc2008
 QT = core sensors
 
 PLUGIN_TYPE = sensorgestures

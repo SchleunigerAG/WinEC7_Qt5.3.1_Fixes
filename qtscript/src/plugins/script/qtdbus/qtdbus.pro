@@ -1,4 +1,4 @@
-TARGET  = qtscriptdbus
+TARGET  = qtscriptdbus5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = script
 PLUGIN_CLASS_NAME = QtDBusScriptPlugin

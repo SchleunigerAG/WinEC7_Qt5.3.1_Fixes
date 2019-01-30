@@ -1,4 +1,4 @@
-TARGET = gstmediaplayer
+TARGET = gstmediaplayer5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = mediaservice
 PLUGIN_CLASS_NAME = QGstreamerPlayerServicePlugin

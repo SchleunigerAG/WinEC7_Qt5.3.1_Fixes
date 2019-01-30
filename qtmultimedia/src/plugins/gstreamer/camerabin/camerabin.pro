@@ -1,4 +1,4 @@
-TARGET = gstcamerabin
+TARGET = gstcamerabin5_3_1_V3-WinEC70Colibri-msvc2008
 
 QT += multimedia-private
 

@@ -152,31 +152,7 @@ public:
         if (!pressDelayEvent) {
             pressDelayEvent.reset(copyMouseEvent(e));
             pressDelayTimer = startTimer(delay);
-
-			// CHANGES SCHLEUNIGER AG, April 2015 :: START
-			if (QWidget *oWidget = qobject_cast<QWidget *>(qGuiApp->touchObject())) {
-				mouseTarget = oWidget->childAt(pressDelayEvent->globalPos());
-			}
-			else {
-				QList<QWidget*> oWidgetList;
-				Q_FOREACH (QWidget *topLevel, qApp->topLevelWidgets()) {
-					if (topLevel->isVisible()) {
-						mouseTarget = topLevel->childAt(pressDelayEvent->globalPos());
-						if (mouseTarget) {
-							//break;
-							oWidgetList.append(mouseTarget);
-						}
-					}
-				}
-				if(oWidgetList.size() > 1) {
-					Q_FOREACH (QWidget *topLevel, oWidgetList) {
-						if(topLevel->parent() == 0) continue;
-						mouseTarget = topLevel;
-					}
-				}
-			}
-			// CHANGES SCHLEUNIGER AG, April 2015 :: END
-
+            mouseTarget = QApplication::widgetAt(pressDelayEvent->globalPos());
             mouseButton = pressDelayEvent->button();
             qFGDebug() << "QFG: consuming/delaying mouse press";
         } else {

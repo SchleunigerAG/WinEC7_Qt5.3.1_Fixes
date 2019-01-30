@@ -1,4 +1,4 @@
-TARGET = qtposition_simulator
+TARGET = qtposition_simulator5_3_1_V3-WinEC70Colibri-msvc2008
 QT = core network positioning
 
 PLUGIN_TYPE = position

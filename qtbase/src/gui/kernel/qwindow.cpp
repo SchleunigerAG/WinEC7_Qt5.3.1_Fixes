@@ -1680,13 +1680,6 @@ QObject *QWindow::focusObject() const
     return const_cast<QWindow *>(this);
 }
 
-// CHANGES SCHLEUNIGER AG, April 2015 :: START
-QObject *QWindow::currentWidget() const
-{
-    return NULL;
-}
-// CHANGES SCHLEUNIGER AG, April 2015 :: END
-
 /*!
     Shows the window.
 

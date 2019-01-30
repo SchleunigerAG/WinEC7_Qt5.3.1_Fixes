@@ -1,4 +1,4 @@
-TARGET = qnlabearer
+TARGET = qnlabearer5_3_1_V3-WinEC70Colibri-msvc2008
 
 PLUGIN_TYPE = bearer
 PLUGIN_CLASS_NAME = QNlaEnginePlugin
