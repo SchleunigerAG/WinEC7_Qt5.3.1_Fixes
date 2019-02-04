@@ -13,6 +13,9 @@ Summary of the changes done by Schleuniger:
 All changes in existing files are marked with the following banner:
 
 CHANGES SCHLEUNIGER AG, DATE START
+
 xxx
+
 CHANGES SCHLEUNIGER AG, DATE END
+
 
