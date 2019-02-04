@@ -9,3 +9,8 @@ Summary of the changes done by Schleuniger:
 - add infix for plugin dlls
 - fix font handling to be able to load a font from filesystem
 - fix for creating screenshots
+
+All changes in existing files are marked with the following banner
+CHANGES SCHLEUNIGER AG, DATE START
+xxx
+CHANGES SCHLEUNIGER AG, DATE END
